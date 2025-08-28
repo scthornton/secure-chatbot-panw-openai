@@ -1,6 +1,6 @@
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
 # ║              🧪 DEVELOPMENT/TESTING CHATBOT WITH SDK INTEGRATION             ║
-# ║                        WITH PERPLEXITY AI INTEGRATION                        ║
+# ║                          WITH OPENAI INTEGRATION                            ║
 # ╠═══════════════════════════════════════════════════════════════════════════════╣
 # ║                                                                               ║
 # ║  ⚠️ DISCLAIMER: NOT an official Palo Alto Networks tool!                     ║
@@ -8,7 +8,7 @@
 # ║  Palo Alto Networks provides NO support. YOU are responsible for everything! ║
 # ║                                                                               ║
 # ║  🧪 TESTING PURPOSE: Demonstrates Palo Alto Networks API integration         ║
-# ║     with Perplexity AI for development and testing purposes only             ║
+# ║     with OpenAI for development and testing purposes only                   ║
 # ║                                                                               ║
 # ║  WORKFLOW: User Input → Security Scan → AI Processing → Response            ║
 # ║  FOR TESTING ENVIRONMENTS ONLY                                               ║
@@ -18,17 +18,16 @@
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║                        📦 IMPORT DECLARATIONS                             ║
 # ║   🛡️ Security imports (requests, uuid) for Palo Alto Networks scanning   ║
-# ║   🧠 AI imports (openai, httpx) for Perplexity chatbot functionality     ║
+# ║   🧠 AI imports (openai) for OpenAI chatbot functionality                ║
 # ║   ⚙️ System imports (os, json, asyncio, time) for core operations         ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 import requests      # 🛡️ SECURITY: HTTP requests for Palo Alto Networks API
 import json          # ⚙️ SYSTEM: JSON data processing for both security and AI
 import os            # ⚙️ SYSTEM: Environment variable management
 import uuid          # 🛡️ SECURITY: Unique transaction IDs for security scans
-import httpx         # 🧠 AI: Advanced HTTP client for Perplexity AI
 import asyncio       # ⚙️ SYSTEM: Asynchronous processing capabilities
 import time          # ⚙️ SYSTEM: Performance timing for security scans
-from openai import OpenAI  # 🧠 AI: OpenAI-compatible client for Perplexity
+from openai import OpenAI  # 🧠 AI: Official OpenAI client for GPT models
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║                    ⚙️ ENVIRONMENT VARIABLE LOADER                         ║
@@ -500,7 +499,7 @@ class SDKSecurityScanner:
         # ║  before they can lead to harmful AI responses.                         ║
         # ║                                                                          ║
         # ║  HOW RESPONSE PREDICTION WORKS:                                         ║
-        # ║  1. 🤖 Palo Alto's AI simulates what Perplexity might respond           ║
+        # ║  1. 🤖 Palo Alto's AI simulates what OpenAI might respond               ║
         # ║  2. 🔍 Analyzes those simulated responses for security violations       ║
         # ║  3. 🚫 Blocks your original message if responses would be dangerous     ║
         # ║  4. 💡 Provides specific guidance on how to fix your message            ║
@@ -515,7 +514,7 @@ class SDKSecurityScanner:
         # 📤 ANALYZE PREDICTED AI RESPONSE FOR SECURITY THREATS
         response_detected = scan_result.get('response_detected', {})  # 🔮 Threats Palo Alto predicts in AI response
         if response_detected:
-            print(f"\n📤 PREDICTED PERPLEXITY AI RESPONSE THREATS:")
+            print(f"\n📤 PREDICTED OPENAI RESPONSE THREATS:")
             for threat_type, detected in response_detected.items():
                 if detected:
                     # 📚 TRANSLATE SECURITY CODES TO HUMAN-FRIENDLY LANGUAGE
@@ -526,13 +525,13 @@ class SDKSecurityScanner:
                     
                     # 💡 PROVIDE DETAILED GUIDANCE FOR RESPONSE-LEVEL THREATS
                     if threat_type == 'url_cats' and detected:
-                        print(f"      └─ 🌐 PREDICTION: Perplexity AI might generate malicious URLs")
+                        print(f"      └─ 🌐 PREDICTION: OpenAI might generate malicious URLs")
                         print(f"      └─ 💡 SECURITY FIX: Rephrase to avoid requesting potentially harmful links")
                     elif threat_type == 'dlp' and detected:
-                        print(f"      └─ 🔒 PREDICTION: Perplexity AI might leak sensitive data")
+                        print(f"      └─ 🔒 PREDICTION: OpenAI might leak sensitive data")
                         print(f"      └─ 💡 SECURITY FIX: Avoid requesting personal or confidential information")
                     elif threat_type in ['toxicity', 'toxic_content'] and detected:
-                        print(f"      └─ 💬 PREDICTION: Perplexity AI might generate harmful content")
+                        print(f"      └─ 💬 PREDICTION: OpenAI might generate harmful content")
                         print(f"      └─ 💡 SECURITY FIX: Use respectful, appropriate language in your question")
                     elif threat_type in ['injection', 'prompt_injection'] and detected:
                         print(f"      └─ ⚡ PREDICTION: AI might be tricked into malicious behavior")
@@ -566,7 +565,7 @@ async def main():
     
     WHAT THIS FUNCTION DOES:
     This is the "mission control" for your secure chatbot. It coordinates between
-    the Palo Alto Networks security scanning and Perplexity AI processing to 
+    the Palo Alto Networks security scanning and OpenAI processing to 
     create a bulletproof, intelligent chatbot experience.
 
     Demonstrates development/testing usage of the Palo Alto Networks
@@ -576,7 +575,7 @@ async def main():
     print("🚀 INITIALIZING PYTHON SDK SECURE AI CHATBOT")
     print("=" * 60)
     print("Security Layer: Palo Alto Networks AI Security Python SDK")
-    print("AI Processing: Perplexity AI Models")
+    print("AI Processing: OpenAI GPT Models")
     print("Features: Python SDK, Async/Sync, Enhanced Error Handling")
     print("=" * 60)
 
@@ -601,15 +600,15 @@ async def main():
 
     print("✅ Palo Alto Networks credentials validated")
 
-    # PERPLEXITY VALIDATION
-    perplexity_key = os.getenv("PERPLEXITY_API_KEY")
+    # OPENAI VALIDATION
+    openai_key = os.getenv("OPENAI_API_KEY")
 
-    if not perplexity_key:
-        print("❌ ERROR: Missing PERPLEXITY_API_KEY environment variable")
-        print("   Get your API key from: https://www.perplexity.ai/settings/api")
+    if not openai_key:
+        print("❌ ERROR: Missing OPENAI_API_KEY environment variable")
+        print("   Get your API key from: https://platform.openai.com/api-keys")
         return
 
-    print("✅ Perplexity AI credentials validated")
+    print("✅ OpenAI credentials validated")
 
     # INITIALIZE SDK SCANNER
     print("\n🛡️ INITIALIZING PYTHON SDK SCANNER...")
@@ -628,23 +627,21 @@ async def main():
         print(f"❌ Failed to initialize SDK Scanner: {e}")
         return
 
-    # INITIALIZE PERPLEXITY AI CLIENT
-    print("\n🧠 INITIALIZING PERPLEXITY AI CLIENT...")
+    # INITIALIZE OPENAI CLIENT
+    print("\n🧠 INITIALIZING OPENAI CLIENT...")
 
-    perplexity_client = None
+    openai_client = None
 
     try:
-        perplexity_client = OpenAI(
-            api_key=perplexity_key,
-            base_url="https://api.perplexity.ai",
-            http_client=httpx.Client()
+        openai_client = OpenAI(
+            api_key=openai_key
         )
-        print("✅ Perplexity AI client initialized successfully")
+        print("✅ OpenAI client initialized successfully")
     except Exception as e:
-        print(f"❌ Failed to initialize Perplexity AI client: {e}")
-        print("   Perplexity functionality will be unavailable")
+        print(f"❌ Failed to initialize OpenAI client: {e}")
+        print("   OpenAI functionality will be unavailable")
         print("   Note: The security scanning will still work perfectly!")
-        perplexity_client = None
+        openai_client = None
 
     # INTERACTIVE CHAT LOOP
     print("\n" + "=" * 60)
@@ -655,7 +652,7 @@ async def main():
     print("• Development/testing threat detection and analysis")
     print("• Async scanning with intelligent retry logic")
     print("• Comprehensive security insights and recommendations")
-    print("• Powered by Perplexity AI for intelligent responses")
+    print("• Powered by OpenAI for intelligent responses")
     print("• Type 'exit' to terminate")
 
     while True:
@@ -712,14 +709,14 @@ async def main():
                 print("=" * 50)
 
                 # AI PROCESSING
-                if perplexity_client:
+                if openai_client:
                     print("\n🧠 AI PROCESSING PHASE")
                     print("=" * 50)
-                    print("Generating Perplexity response...")
+                    print("Generating OpenAI response...")
 
                     try:
-                        response = perplexity_client.chat.completions.create(
-                            model="llama-3.1-sonar-small-128k-online",
+                        response = openai_client.chat.completions.create(
+                            model="gpt-3.5-turbo",
                             messages=[
                                 {
                                     "role": "user",
@@ -727,24 +724,23 @@ async def main():
                                 }
                             ],
                             max_tokens=800,
-                            temperature=0.7,
-                            stream=False
+                            temperature=0.7
                         )
 
                         ai_response = response.choices[0].message.content
 
                         print("\n" + "=" * 60)
-                        print("🤖 PERPLEXITY RESPONSE:")
+                        print("🤖 OPENAI RESPONSE:")
                         print("=" * 60)
                         print(ai_response)
                         print("=" * 60)
 
-                    except Exception as perplexity_err:
-                        print(f"\n❌ PERPLEXITY ERROR: {perplexity_err}")
+                    except Exception as openai_err:
+                        print(f"\n❌ OPENAI ERROR: {openai_err}")
                         print(
                             "🤖 Response: A technical error occurred during AI processing.")
                 else:
-                    print("\n⚠️  PERPLEXITY UNAVAILABLE")
+                    print("\n⚠️  OPENAI UNAVAILABLE")
                     print(
                         "🤖 Response: Message passed security screening, but AI processing unavailable.")
 

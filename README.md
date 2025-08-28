@@ -1,4 +1,4 @@
-# 🛡️ Secure AI Chatbot with Perplexity AI
+# 🛡️ Secure AI Chatbot with OpenAI
 
 ## 🚨 Critical Disclaimers
 
@@ -14,7 +14,7 @@
 
 ## 🌟 Overview
 
-**🔒 Development Security Demo**: Every message is scanned for threats before AI processing, demonstrating integration between Palo Alto Networks APIs and Perplexity AI for development and testing purposes.
+**🔒 Development Security Demo**: Every message is scanned for threats before AI processing, demonstrating integration between Palo Alto Networks APIs and OpenAI for development and testing purposes.
 
 ---
 
@@ -29,9 +29,9 @@
 
 ### 🧠 **Intelligent AI Responses**  
 
-- Powered by **Perplexity AI** with web search capabilities
-- **Up-to-date information** from real-time web searches
-- **Contextual, accurate responses** backed by current data
+- Powered by **OpenAI GPT models** with advanced language understanding
+- **Sophisticated language processing** with state-of-the-art AI
+- **Versatile AI capabilities** for various tasks and queries
 - **Professional-grade AI processing** with reliable performance
 
 ### 📊 **Development/Testing Features**
@@ -49,7 +49,7 @@
 
 ```bash
 # Clone or extract the secure chatbot files
-cd secure-chatbot-perplexity
+cd secure-chatbot-openai
 
 # Install required Python packages
 pip install -r requirements.txt
@@ -70,25 +70,25 @@ cp .env.example .env
 PANW_AI_SEC_API_KEY=your_palo_alto_api_key_here
 PANW_AI_SEC_PROFILE_NAME=your_security_profile_name
 
-# Perplexity AI
-PERPLEXITY_API_KEY=your_perplexity_api_key_here
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 ### **Step 3: Run the Chatbot**
 
 ```bash
 # Basic version (Direct HTTP API)
-python3 secure_chatbot_perplexity_api.py
+python3 secure_chatbot_openai_api.py
 
 # Advanced version (Python SDK with enhanced features)
-python3 secure_chatbot_perplexity_sdk.py
+python3 secure_chatbot_openai_sdk.py
 ```
 
 ### **Step 4: Start Chatting Safely!**
 
 - Type your questions naturally
 - Each message gets security scanned automatically
-- Safe messages get intelligent Perplexity AI responses with web search
+- Safe messages get intelligent OpenAI responses with advanced reasoning
 - Dangerous messages are blocked with detailed explanations
 
 ---
@@ -105,14 +105,14 @@ python3 secure_chatbot_perplexity_sdk.py
 
 **⚠️ Development Note**: This is an independent testing tool. Contact Palo Alto Networks directly for official enterprise solutions and support.
 
-### **Perplexity AI**
+### **OpenAI**
 
-1. **Visit**: [Perplexity API Settings](https://www.perplexity.ai/settings/api)
-2. **Create Account**: Sign up for Perplexity Pro if needed
-3. **Generate API Key**: Create your API key (starts with `pplx-`)
+1. **Visit**: [OpenAI Platform](https://platform.openai.com/api-keys)
+2. **Create Account**: Sign up for OpenAI Platform access
+3. **Generate API Key**: Create your API key in the API Keys section
 4. **Choose Plan**: Select appropriate plan for your usage volume
 
-**Pricing Note**: Perplexity charges per API request. Monitor usage and set appropriate limits.
+**Pricing Note**: OpenAI charges per token usage. Monitor usage and set appropriate limits.
 
 ---
 
@@ -142,12 +142,12 @@ python3 secure_chatbot_perplexity_sdk.py
                  │         │
                  ▼         ▼
       ┌─────────────┐ ┌─────────────────────────────────┐
-      │   🚫 BLOCK  │ │    🧠 PERPLEXITY AI PROCESSING  │
+      │   🚫 BLOCK  │ │        🧠 OPENAI PROCESSING      │
       │   MESSAGE   │ │                                 │
-      │             │ │  • Web Search Integration        │
-      │   Warn User │ │  • Real-time Information        │
+      │             │ │  • Advanced Language Models     │
+      │   Warn User │ │  • Sophisticated AI Reasoning   │
       │   Show Threat│ │  • Intelligent Responses        │
-      │   Details    │ │  • Contextual Understanding     │
+      │   Details    │ │  • Versatile AI Capabilities    │
       └─────────────┘ └─────────────┬───────────────────┘
                                     │
                                     ▼
@@ -190,9 +190,9 @@ ACT:      Immediate blocking or forwarding to AI processing
 ## 📁 Project Structure
 
 ```
-secure-chatbot-perplexity/
-├── 🚀 secure_chatbot_perplexity_api.py     # Main chatbot (HTTP API)
-├── 🛡️ secure_chatbot_perplexity_sdk.py     # Advanced chatbot (Python SDK)
+secure-chatbot-openai/
+├── 🚀 secure_chatbot_openai_api.py        # Main chatbot (HTTP API)
+├── 🛡️ secure_chatbot_openai_sdk.py        # Advanced chatbot (Python SDK)
 ├── 🔧 requirements.txt                     # Python dependencies
 ├── 📝 .env.example                         # Environment template
 ├── 📖 README.md                            # This documentation
@@ -376,11 +376,11 @@ Solutions:
 ### **AI Model Selection**
 
 ```python
-# Available Perplexity Models
+# Available OpenAI Models
 models = [
-    "llama-3.1-sonar-small-128k-online",    # Fast, cost-effective
-    "llama-3.1-sonar-large-128k-online",    # Higher quality responses
-    "llama-3.1-sonar-huge-128k-online",     # Maximum capability
+    "gpt-3.5-turbo",                    # Fast, cost-effective
+    "gpt-4",                            # Higher quality responses
+    "gpt-4-turbo",                      # Maximum capability
 ]
 ```
 
@@ -388,8 +388,8 @@ models = [
 
 - **Tone and Style**: Configure AI personality
 - **Response Length**: Set minimum/maximum response tokens
-- **Search Integration**: Enable/disable web search
-- **Citations**: Include/exclude source references
+- **Model Selection**: Choose appropriate GPT model
+- **Function Calling**: Enable/disable tool usage
 
 ---
 
@@ -399,7 +399,7 @@ models = [
 
 - **Technical Support**: Contact your technical team or integrator
 - **Palo Alto Networks**: This tool is NOT officially supported - contact them directly for official solutions
-- **Perplexity AI**: API support through their developer portal
+- **OpenAI**: API support through their developer portal
 
 ### **Maintenance Schedule**
 
@@ -441,7 +441,7 @@ models = [
 
 - Initial development/testing release
 - Full Palo Alto Networks AI Security integration
-- Perplexity AI with web search capabilities
+- OpenAI GPT models with advanced language capabilities
 - Comprehensive security scanning and threat detection
 
 ### **Planned Updates**
