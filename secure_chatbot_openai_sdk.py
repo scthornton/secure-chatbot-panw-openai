@@ -53,6 +53,10 @@ try:
 except Exception as e:
     print(f"⚠️ Could not load .env file: {e}")
 
+# OpenAI model to use. Override with the OPENAI_MODEL environment variable
+# (or a line in .env) if you want a different model without editing the code.
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║                🛡️ PALO ALTO NETWORKS SECURITY SDK IMPORT                  ║
 # ║  ⚠️  CRITICAL: THIS IS 100% SECURITY - NO CHATBOT FUNCTIONALITY HERE!     ║
@@ -716,7 +720,7 @@ async def main():
 
                     try:
                         response = openai_client.chat.completions.create(
-                            model="gpt-3.5-turbo",
+                            model=OPENAI_MODEL,  # OpenAI chat model, defaults to gpt-4o-mini
                             messages=[
                                 {
                                     "role": "user",

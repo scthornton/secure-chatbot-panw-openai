@@ -1,9 +1,11 @@
 # ===========================================================================
-# SECURE AI CHATBOT WITH PERPLEXITY - PYTHON DEPENDENCIES
+# SECURE AI CHATBOT WITH OPENAI - PYTHON DEPENDENCIES
 # ===========================================================================
 # 
 # This file contains all the Python packages required to run the secure chatbot.
 # Install these dependencies by running: pip install -r requirements.txt
+#
+# Requires Python 3.10+ (pan-aisecurity minimum).
 #
 # ===========================================================================
 
@@ -12,14 +14,14 @@ requests>=2.31.0          # For making HTTP requests to APIs
 httpx>=0.25.0            # Advanced HTTP client for modern applications
 urllib3>=2.0.0           # HTTP client library (requests dependency)
 
-# OpenAI-compatible client for Perplexity API
-openai>=1.0.0            # OpenAI Python library (compatible with Perplexity)
+# OpenAI client (the AI model this chatbot talks to)
+openai>=1.0.0            # Official OpenAI Python library
 
 # JSON and data handling
 pydantic>=2.0.0          # Data validation and parsing
 
 # Palo Alto Networks AI Security SDK (Enterprise Security)
-pan-aisecurity>=1.0.0    # Official Palo Alto Networks AI Security Python SDK
+pan-aisecurity>=0.4.0    # Official Palo Alto Networks AI Security Python SDK
 
 # Async processing capabilities
 asyncio-throttle>=1.0.0  # Rate limiting for async operations (optional)
