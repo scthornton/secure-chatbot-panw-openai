@@ -20,7 +20,7 @@ This guide provides instructions for deploying the development/testing chatbot i
 - [ ] **Compute**: 2+ CPU cores, 4GB+ RAM for testing environment
 - [ ] **Network**: Outbound HTTPS (443) access to APIs for development
 - [ ] **Storage**: 10GB+ for logs and temporary files during testing
-- [ ] **Python**: Version 3.8+ with pip package manager
+- [ ] **Python**: Version 3.10+ with pip package manager
 - [ ] **Development Environment**: Isolated testing environment ready
 
 ### **Testing Security Requirements**
@@ -63,7 +63,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Copy application files
-# (Copy all files from secure-chatbot-perplexity folder)
+# (Copy all files from secure-chatbot-panw-openai folder)
 
 # Install dependencies
 pip install -r requirements.txt
@@ -116,7 +116,7 @@ credential = DefaultAzureCredential()
 client = SecretClient(vault_url="https://your-vault.vault.azure.net/", credential=credential)
 
 panw_api_key = client.get_secret("panw-ai-sec-api-key").value
-perplexity_api_key = client.get_secret("perplexity-api-key").value
+openai_api_key = client.get_secret("openai-api-key").value
 ```
 
 #### **Option C: AWS Secrets Manager**
@@ -133,7 +133,7 @@ response = client.get_secret_value(SecretId='secure-chatbot-secrets')
 secrets = json.loads(response['SecretString'])
 
 panw_api_key = secrets['PANW_AI_SEC_API_KEY']
-perplexity_api_key = secrets['PERPLEXITY_API_KEY']
+openai_api_key = secrets['OPENAI_API_KEY']
 ```
 
 ### **2. Network Security**
@@ -281,7 +281,7 @@ def health_check():
         'version': '1.0.0',
         'dependencies': {
             'palo_alto_api': check_palo_alto_connectivity(),
-            'perplexity_api': check_perplexity_connectivity()
+            'openai_api': check_openai_connectivity()
         }
     }
     return jsonify(checks)
@@ -321,7 +321,7 @@ sudo nano /etc/systemd/system/secure-chatbot.service
 
 ```ini
 [Unit]
-Description=Secure AI Chatbot with Perplexity
+Description=Secure AI Chatbot with OpenAI
 After=network.target
 
 [Service]
@@ -331,7 +331,7 @@ Group=secure-chatbot
 WorkingDirectory=/opt/secure-chatbot
 Environment=PATH=/opt/secure-chatbot/venv/bin
 Environment=PYTHONPATH=/opt/secure-chatbot
-ExecStart=/opt/secure-chatbot/venv/bin/python secure_chatbot_perplexity_api.py
+ExecStart=/opt/secure-chatbot/venv/bin/python secure_chatbot_openai_api.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
@@ -371,7 +371,7 @@ sudo nano /etc/supervisor/conf.d/secure-chatbot.conf
 
 ```ini
 [program:secure-chatbot]
-command=/opt/secure-chatbot/venv/bin/python secure_chatbot_perplexity_api.py
+command=/opt/secure-chatbot/venv/bin/python secure_chatbot_openai_api.py
 directory=/opt/secure-chatbot
 user=secure-chatbot
 autostart=true
@@ -485,10 +485,10 @@ pan_key = os.getenv('PANW_AI_SEC_API_KEY')
 if not pan_key:
     raise Exception("Missing PANW_AI_SEC_API_KEY")
 
-# Test Perplexity API
-perplexity_key = os.getenv('PERPLEXITY_API_KEY')
-if not perplexity_key:
-    raise Exception("Missing PERPLEXITY_API_KEY")
+# Test OpenAI API
+openai_key = os.getenv('OPENAI_API_KEY')
+if not openai_key:
+    raise Exception("Missing OPENAI_API_KEY")
 
 print("✅ All API keys present")
 EOF

@@ -14,7 +14,9 @@
 
 ## 🌟 Overview
 
-**🔒 Development Security Demo**: Every message is scanned for threats before AI processing, demonstrating integration between Palo Alto Networks APIs and OpenAI for development and testing purposes.
+**🔒 Development Security Demo**: Every prompt is scanned for threats before it reaches the model, and every model response is scanned before it is shown to the user. It demonstrates integration between the Palo Alto Networks Prisma AIRS Runtime API and OpenAI for development and testing purposes.
+
+Looking for the same app routed through the **Prisma AIRS AI Gateway** instead of calling the scan API directly? See [secure-chatbot-panw-gateway](https://github.com/scthornton/secure-chatbot-panw-gateway).
 
 ---
 
@@ -47,13 +49,19 @@
 
 ### **Step 1: Installation**
 
-```bash
-# Clone or extract the secure chatbot files
-cd secure-chatbot-openai
+Python 3.10 or newer is required.
 
-# Install required Python packages
+```bash
+git clone https://github.com/scthornton/secure-chatbot-panw-openai.git
+cd secure-chatbot-panw-openai
+
+python3 -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
 pip install -r requirements.txt
 ```
+
+Prefer a guided setup? `python3 setup_script.py` does the same steps and creates `.env` for you.
 
 ### **Step 2: Configuration**
 
@@ -66,30 +74,35 @@ cp .env.example .env
 2. Edit `.env` with your API credentials:
 
 ```bash
-# Palo Alto Networks AI Security
+# Palo Alto Networks Prisma AIRS
 PANW_AI_SEC_API_KEY=your_palo_alto_api_key_here
 PANW_AI_SEC_PROFILE_NAME=your_security_profile_name
+# Optional: regional endpoint (US is the default). Keys are region-specific.
+# PANW_AI_SEC_ENDPOINT=https://service-de.api.aisecurity.paloaltonetworks.com
 
 # OpenAI
 OPENAI_API_KEY=your_openai_api_key_here
+# Optional: model override (default gpt-4o-mini)
+# OPENAI_MODEL=gpt-4o
 ```
 
 ### **Step 3: Run the Chatbot**
 
 ```bash
-# Basic version (Direct HTTP API)
+# Basic version (direct HTTP calls to the scan API)
 python3 secure_chatbot_openai_api.py
 
-# Advanced version (Python SDK with enhanced features)
+# SDK version (pan-aisecurity configuration, retries, timing)
 python3 secure_chatbot_openai_sdk.py
 ```
 
 ### **Step 4: Start Chatting Safely!**
 
 - Type your questions naturally
-- Each message gets security scanned automatically
-- Safe messages get intelligent OpenAI responses with advanced reasoning
-- Dangerous messages are blocked with detailed explanations
+- Each prompt is scanned before it is sent to OpenAI
+- Each OpenAI response is scanned before it is displayed
+- Blocked prompts and blocked responses are explained with the detectors that fired
+- Scans carry `app_name` and `app_user` metadata, so they are easy to find in Strata Cloud Manager
 
 ---
 
@@ -152,11 +165,23 @@ python3 secure_chatbot_openai_sdk.py
                                     │
                                     ▼
                       ┌─────────────────────────────────┐
+                      │  🛡️ PALO ALTO RESPONSE SCAN     │
+                      │  (prompt + response together)   │
+                      │                                 │
+                      │  • Sensitive data in the reply  │
+                      │  • Malicious URLs / code        │
+                      │  • Toxic content                │
+                      │  • Database security            │
+                      └─────────────┬───────────────────┘
+                                    │
+                        block ◄─────┴─────► allow
+                                              │
+                                              ▼
+                      ┌─────────────────────────────────┐
                       │     📤 SECURE AI RESPONSE       │
                       │                                 │
                       │  • Verified Safe Content        │
-                      │  • Intelligent & Current        │
-                      │  • Audit Trail Logged          │
+                      │  • Audit Trail Logged           │
                       └─────────────────────────────────┘
 ```
 
@@ -190,14 +215,17 @@ ACT:      Immediate blocking or forwarding to AI processing
 ## 📁 Project Structure
 
 ```
-secure-chatbot-openai/
+secure-chatbot-panw-openai/
 ├── 🚀 secure_chatbot_openai_api.py        # Main chatbot (HTTP API)
 ├── 🛡️ secure_chatbot_openai_sdk.py        # Advanced chatbot (Python SDK)
+├── ⚙️ setup_script.py                      # Optional guided setup
 ├── 🔧 requirements.txt                     # Python dependencies
 ├── 📝 .env.example                         # Environment template
 ├── 📖 README.md                            # This documentation
-├── 🎯 DEPLOYMENT_GUIDE.md                  # Production deployment guide
-└── 📊 MONITORING_GUIDE.md                  # Operations and monitoring
+├── 🎯 DEPLOYMENT_GUIDE.md                  # Dev/test deployment guide
+├── 📦 CUSTOMER_PACKAGE.md                  # What to hand a customer
+├── 🔐 SECURITY.md                          # How to report a security issue
+└── 📄 LICENSE                              # MIT
 ```
 
 ---
@@ -317,25 +345,23 @@ AUDIT - Security events, blocked messages
 #### **❌ "Invalid API Key" Error**
 
 ```
-Symptoms: 403 Forbidden responses
-Diagnosis: Check API key validity and permissions
+Symptoms: HTTP 401 Unauthorized from the scan API
+Diagnosis: Missing, mistyped, expired, or wrong-region API key
 Solutions:
-- Verify API key in .env file (no extra spaces)
-- Check key expiration date
-- Confirm key has required permissions
-- Test key with API provider's test endpoint
+- Verify PANW_AI_SEC_API_KEY in .env (no quotes or extra spaces)
+- Check the key's expiration / next rotation date in Strata Cloud Manager
+- Keys are region-specific: a US key does not work against service-de
 ```
 
 #### **❌ "Profile Not Found" Error**
 
 ```
-Symptoms: 404 Not Found for security profile
-Diagnosis: Profile name mismatch or inactive profile
+Symptoms: HTTP 400 Bad Request from the scan API
+Diagnosis: Profile name mismatch (names are case-sensitive)
 Solutions:
-- Verify exact profile name (case-sensitive)
-- Check profile exists in Strata Cloud Manager
-- Ensure profile is active and properly configured
-- Contact Palo Alto Networks support if needed
+- Copy the exact profile name from Strata Cloud Manager
+- Confirm the profile is deployed, not just saved
+- Confirm the profile belongs to the same tenant as the API key
 ```
 
 #### **❌ "Connection Timeout" Error**
@@ -375,14 +401,9 @@ Solutions:
 
 ### **AI Model Selection**
 
-```python
-# Available OpenAI Models
-models = [
-    "gpt-3.5-turbo",                    # Fast, cost-effective
-    "gpt-4",                            # Higher quality responses
-    "gpt-4-turbo",                      # Maximum capability
-]
-```
+The default model is `gpt-4o-mini`. Set `OPENAI_MODEL` in `.env` to any current
+chat model (for example `gpt-4o`). Model names retire over time, so check
+https://platform.openai.com/docs/models rather than pinning an old one.
 
 ### **Response Customization**
 
@@ -457,13 +478,17 @@ models = [
 
 **🔐 Stay Secure, Stay Intelligent!** 🛡️🤖✨
 
+---
 
+## 📄 License
+
+MIT. See [LICENSE](LICENSE).
 
 ---
 
 ## Contact
 
-**Scott Thornton** — AI Security Researcher
+**Scott Thornton** - AI Security Researcher
 
 - Website: [perfecxion.ai](https://perfecxion.ai/)
 - Email: [scott@perfecxion.ai](mailto:scott@perfecxion.ai)
